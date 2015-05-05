@@ -1,7 +1,7 @@
 package Mojolicious::Plugin::DevexpressHelpers::Helpers;
 use Modern::Perl;
 use Mojo::ByteStream;
-use Mojo::JSON qw(encode_json);
+use MojoX::AlmostJSON qw(encode_json);
 =head1 SUBROUTINES/METHODS
 
 =cut

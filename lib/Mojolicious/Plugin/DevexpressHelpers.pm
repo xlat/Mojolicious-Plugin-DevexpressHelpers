@@ -3,7 +3,7 @@ package Mojolicious::Plugin::DevexpressHelpers;
 use Modern::Perl;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojolicious::Plugin::DevexpressHelpers::Helpers;
-use Mojo::JSON;
+use MojoX::AlmostJSON;
 =head1 NAME
 
 Mojolicious::Plugin::DevexpressHelpers - Add some helpers to add and configure Devexpress controls
@@ -60,8 +60,8 @@ sub register {
     $app->helper( $tp.'datagrid' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxdatagrid );
     
     #make json boolean easier to write within templates
-    $app->helper( 'true' => \&Mojo::JSON::true );
-    $app->helper( 'false' => \&Mojo::JSON::false );
+    $app->helper( 'true' => \&MojoX::AlmostJSON::true );
+    $app->helper( 'false' => \&MojoX::AlmostJSON::false );
     
     $app->hook(before_dispatch => sub{
         my $c = shift;
