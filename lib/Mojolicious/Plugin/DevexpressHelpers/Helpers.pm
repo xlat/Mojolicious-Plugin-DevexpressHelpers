@@ -1,4 +1,6 @@
 package Mojolicious::Plugin::DevexpressHelpers::Helpers;
+
+#ABSTRACT: Helpers for Devexpress controls are defined here
 use Modern::Perl;
 use Mojo::ByteStream;
 use MojoX::AlmostJSON qw(encode_json);
@@ -6,9 +8,11 @@ use MojoX::AlmostJSON qw(encode_json);
 
 =cut
 
-=head2 new
+=head2 out
 
-	$c->stash( 'dxHelper' => Mojolicous::Plugin::DevexpressHelpers::Helpers->new );
+Output string in template
+
+	out '<div id="'.$id.'"></div>';
 
 =cut
 sub out{
@@ -16,6 +20,14 @@ sub out{
 	return Mojo::ByteStream->new($tag);
 }
 
+=head2 new
+
+Internal usage.
+
+	my $dxHelper = Mojolicous::Plugin::DevexpressHelpers::Helpers->new;
+	$c->stash( dxHelper => $dxHelper );
+
+=cut
 sub new{
 	my $class = shift;
 	my $self = bless { 
@@ -25,22 +37,53 @@ sub new{
 	return $self;
 }
 
+=head2 add_binding
+
+Internal usage.
+
+	$dxHelper->add_binding($binding, [$binding2,...] );
+
+=cut
 sub add_binding{
 	my $self = shift;
 	$self->{bindings} .= join "\n", @_;
 }
 
+=head2 next_id
+
+Internal usage.
+
+	my $next_id_number = $dxHelper->next_id;
+
+=cut
 sub next_id{
 	my $self = shift;
 	return "dxctl".($self->{next_id}++);
 }
 
+=head2 new_id
+
+Internal usage.
+
+	my $new_id = $dxHelper->new_id;
+
+=cut
 sub new_id{
 	my ($c, $attrs) = @_;
 	#should compute a new uniq id 
 	$c->stash('dxHelper')->next_id;
 }
 
+=head2 dxbind
+
+Internal usage.
+
+	dxbind( $c, 'dxButton' => $id => $attrs, \@extensions);
+
+Produce a div tag with an computed id, which will be binded to
+a dxButton with $attrs attributs at call to dxbuild
+
+=cut
 sub dxbind{
 	my ($c, $control, $id, $attrs, $extensions) = @_;
 	#should return html code to be associated to the control
@@ -66,6 +109,14 @@ sub dxbind{
 	out '<div id="'.$id.'"></div>';
 }
 
+
+=head2 parse_attributs
+
+Internal usage
+
+	my $attrs = parse_attributs( $c, \@implicit_arguments, @attributs )
+
+=cut
 sub parse_attributs{
 	my $c = shift;
 	my @implicit_args = @{shift()};
@@ -146,5 +197,61 @@ sub dxbuild {
 		out '<script language="javascript">$(function(){'.$dxhelper->{bindings}.'});</script>';
 	}
 }
+
+=head2 require_asset
+
+Used to specify an asset dependency, that will be appended on call to required_assets.
+This function need 'AssetPack' plugin to be configurated in your application.
+
+in your template:
+
+	<body>
+		...
+		%= require_asset 'MyScript.js'
+		...
+	</body>
+
+in your layout:
+
+	<head>
+		...
+		%= required_assets
+		...
+	</head>
+
+
+=cut
+
+sub require_asset{
+	my $c = shift;
+	my $dxhelper = $c->stash('dxHelper') or return;
+	
+	push @{ $dxhelper->{required_assets} }, $_ for @_;
+	
+	return $c;
+}
+
+=head2 required_assets
+
+Add assets that was specified by calls to require_asset.
+See require_asset for usage.
+
+=cut
+
+sub required_assets{
+	my $c = shift;
+	my $dxhelper = $c->stash('dxHelper') or return;
+	my $required_assets = $dxhelper->{required_assets} // [];
+	my $results = Mojo::ByteStream->new();
+	ASSET:
+	for my $asset (@$required_assets){
+		#not sure about how to simulate " %= asset 'resource' " that we can use in template rendering, 
+		#nor how to output multiple Mojo::ByteStream objets at a time (is returning required ?)
+		$$results .= ${ $c->asset($asset) };
+	}
+	return $results;
+}
+
+
 
 1;

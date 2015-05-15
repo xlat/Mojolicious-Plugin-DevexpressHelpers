@@ -1,5 +1,6 @@
 package Mojolicious::Plugin::DevexpressHelpers;
 
+#ABSTRACT: Add some helpers to add and configure Devexpress controls
 use Modern::Perl;
 use Mojo::Base 'Mojolicious::Plugin';
 use Mojolicious::Plugin::DevexpressHelpers::Helpers;
@@ -8,13 +9,8 @@ use MojoX::AlmostJSON;
 
 Mojolicious::Plugin::DevexpressHelpers - Add some helpers to add and configure Devexpress controls
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
 
-our $VERSION = '0.01';
 
 
 =head1 SYNOPSIS
@@ -55,6 +51,8 @@ sub register {
     
     my $tp = $args->{'tag_prefix'} // 'dx';
     
+    $app->helper( 'require_asset' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::require_asset );
+    $app->helper( 'required_assets' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::required_assets );
     $app->helper( 'dxbuild' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbuild );
     $app->helper( $tp.'button' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbutton );
     $app->helper( $tp.'datagrid' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxdatagrid );
