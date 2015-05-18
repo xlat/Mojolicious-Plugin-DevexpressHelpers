@@ -122,7 +122,7 @@ sub parse_attributs{
 	my @implicit_args = @{shift()};
 	my %attrs;
 	IMPLICIT_ARGUMENT:
-	while(defined($_[0]) and ref($_[0]) eq ''){
+	while(defined($_[0]) and ref($_[0]) =~ /^(?:|SCALAR)$/){
 		$attrs{ shift @implicit_args } = shift @_;
 	}
 	if(my $args = shift){
@@ -163,6 +163,7 @@ sub dxbutton {
 
 sub dxdatagrid{
 	my $c = shift;
+	$DB::single=1;
 	my $attrs = parse_attributs( $c, [qw(dataSource)], @_ );
 	my $id = new_id( $c, $attrs );
 	my @extensions;

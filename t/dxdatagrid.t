@@ -16,6 +16,7 @@ app->log->level('error'); #silence
 
 # routes
 get '/' => 'index';
+get '/customstore' => 'customstore';
 
 # Test
 my $t = Test::Mojo->new;
@@ -35,12 +36,31 @@ dataSource: {store:{type:'odata',url:'/web-service.json'}}});});</script>
 </html>
 EOF
 
+# GET /customstore
+$t->get_ok('/customstore')->status_is(200)->content_is(<<'EOF');
+<!doctype html>
+<html>
+    <head>
+       <title>Test</title>
+    </head>
+    <body><div id="dxctl1"></div>
+
+<script language="javascript">$(function(){$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
+dataSource: SERVICES.myEntity});});</script>
+</body>
+</html>
+EOF
+
 done_testing;
 
 __DATA__
 @@ index.html.ep
 % layout 'main';
 %= dxdatagrid '/web-service.json' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
+
+@@ customstore.html.ep
+% layout 'main';
+%= dxdatagrid \'SERVICES.myEntity' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
 
 @@ layouts/main.html.ep
 <!doctype html>
