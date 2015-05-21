@@ -15,9 +15,7 @@ Mojolicious::Plugin::DevexpressHelpers - Add some helpers to add and configure D
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
+Add some helpers to add and configure Devexpress controls in templates.
 
     plugin 'DevexpressHelpers' => {
             dx_path => 'c:/Program Files (x86)/DevExpress 14.2/DevExtreme/Sources/Lib',
@@ -26,15 +24,13 @@ Perhaps a little code snippet.
         
     ...
     %= dxbutton 'My button' => '/my/action'
-    %= dxbutton 'My button' => q{function (){ alert('on_clicked!') }};
-    %= dxbutton 'My button' => { 
-            onClick => q{function (){ alert('on_clicked!') }},
-            class => [qw( my_class1 my_class2 )],
-        };
 
 =head1 HELPERS
 
-A list of functions are exported by default.
+C<dxbutton>
+C<dxdatagrid>
+C<require_asset>
+C<required_assets>
 
 =head2 register
 
@@ -56,6 +52,7 @@ sub register {
     $app->helper( 'dxbuild' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbuild );
     $app->helper( $tp.'button' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbutton );
     $app->helper( $tp.'datagrid' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxdatagrid );
+    $app->helper( $tp.'popup' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxpopup );
     
     #make json boolean easier to write within templates
     $app->helper( 'true' => \&MojoX::AlmostJSON::true );

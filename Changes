@@ -1,5 +1,8 @@
-Revision history for Mojolicous-Plugin-DevexpressHelpers
+Revision history for {{$dist->name}}
 
+{{$NEXT}}
+
+        Add dxpopup helper, modify API to introduce id parameters.
 0.01    Date/time
         First version, released on an unsuspecting world.
 

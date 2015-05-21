@@ -22,45 +22,29 @@ get '/customstore' => 'customstore';
 my $t = Test::Mojo->new;
 
 # GET / default
-$t->get_ok('/')->status_is(200)->content_is(<<'EOF');
-<!doctype html>
-<html>
-    <head>
-       <title>Test</title>
-    </head>
-    <body><div id="dxctl1"></div>
-
-<script language="javascript">$(function(){$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
-dataSource: {store:{type:'odata',url:'/web-service.json'}}});});</script>
-</body>
-</html>
-EOF
+$t->get_ok('/')
+  ->status_is(200)
+  ->element_exists('html body div[id=dxctl1]')
+  ->text_is('script' => q{$(function(){$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
+dataSource: {store:{type:'odata',url:'/web-service.json'}}});});});
 
 # GET /customstore
-$t->get_ok('/customstore')->status_is(200)->content_is(<<'EOF');
-<!doctype html>
-<html>
-    <head>
-       <title>Test</title>
-    </head>
-    <body><div id="dxctl1"></div>
-
-<script language="javascript">$(function(){$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
-dataSource: SERVICES.myEntity});});</script>
-</body>
-</html>
-EOF
+$t->get_ok('/customstore')
+  ->status_is(200)
+  ->element_exists('html body div[id=myGrid1]')
+  ->text_is('script' => q{$(function(){$("#myGrid1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
+dataSource: SERVICES.myEntity});});});
 
 done_testing;
 
 __DATA__
 @@ index.html.ep
 % layout 'main';
-%= dxdatagrid '/web-service.json' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
+%= dxdatagrid undef, '/web-service.json' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
 
 @@ customstore.html.ep
 % layout 'main';
-%= dxdatagrid \'SERVICES.myEntity' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
+%= dxdatagrid myGrid1 => \'SERVICES.myEntity' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
 
 @@ layouts/main.html.ep
 <!doctype html>
