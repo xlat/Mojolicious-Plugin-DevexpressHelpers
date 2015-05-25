@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.151450  2015-05-25 12:28:44+02:00 Europe/Paris
         Take in account dot in id for jquery
         Add more dx-controls.
         Review prereqs
