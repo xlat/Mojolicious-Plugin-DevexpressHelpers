@@ -17,6 +17,7 @@ app->log->level('error'); #silence
 # routes
 get '/' => 'index';
 get '/customstore' => 'customstore';
+get '/customeoptions' => 'customeoptions';
 
 # Test
 my $t = Test::Mojo->new;
@@ -35,6 +36,12 @@ $t->get_ok('/customstore')
   ->text_is('script' => q{$(function(){$("#myGrid1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
 dataSource: SERVICES.myEntity});});});
 
+# GET /customeoptions
+$t->get_ok('/customeoptions')
+  ->status_is(200)
+  ->element_exists('html body div[id=myGrid2]')
+  ->text_is('script' => q{$(function(){$("#myGrid2").dxDataGrid(SERVICES.gridsOptions.myEntity);});});
+
 done_testing;
 
 __DATA__
@@ -45,6 +52,10 @@ __DATA__
 @@ customstore.html.ep
 % layout 'main';
 %= dxdatagrid myGrid1 => \'SERVICES.myEntity' => { columns => [ qw(id name), { cellTemplate => \q{function(c,o){ return 42 }}}, {allowFiltering => false} ] }
+
+@@customeoptions.html.ep
+% layout 'main';
+%= dxdatagrid myGrid2 => { options => 'SERVICES.gridsOptions.myEntity', dumy => 42 }
 
 @@ layouts/main.html.ep
 <!doctype html>

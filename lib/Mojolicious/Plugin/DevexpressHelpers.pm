@@ -27,10 +27,7 @@ Add some helpers to add and configure Devexpress controls in templates.
 
 =head1 HELPERS
 
-C<dxbutton>
-C<dxdatagrid>
-C<require_asset>
-C<required_assets>
+See L<Mojolicious::Plugin::DevexpressHelpers::Helpers>.
 
 =head2 register
 
@@ -39,31 +36,26 @@ Plugin entry point, internaly used by Mojolicious Plugin API.
 =cut
 
 sub register {
-    my ($self, $app, $args) = @_;
-    
-    #TODO: add assetpack
-    #plugin "AssetPack";
-    #app->asset( ... );
-    
-    my $tp = $args->{'tag_prefix'} // 'dx';
-    
-    $app->helper( 'require_asset' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::require_asset );
-    $app->helper( 'required_assets' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::required_assets );
-    $app->helper( 'dxbuild' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbuild );
-    $app->helper( $tp.'button' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxbutton );
-    $app->helper( $tp.'datagrid' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxdatagrid );
-    $app->helper( $tp.'popup' => \&Mojolicious::Plugin::DevexpressHelpers::Helpers::dxpopup );
-    
+    my ( $self, $app, $args ) = @_;
+
+    $args->{'tag_camelcase'} //= 1;
+    $args->{'tag_prefix'}    //= 'dx';
+    Mojolicious::Plugin::DevexpressHelpers::Helpers->register( $app, $args );
+
     #make json boolean easier to write within templates
-    $app->helper( 'true' => \&MojoX::AlmostJSON::true );
+    $app->helper( 'true'  => \&MojoX::AlmostJSON::true );
     $app->helper( 'false' => \&MojoX::AlmostJSON::false );
-    
-    $app->hook(before_dispatch => sub{
-        my $c = shift;
-        #create a new object that will help to generate binding for dx controls
-        $c->stash('dxHelper' => Mojolicious::Plugin::DevexpressHelpers::Helpers->new );
-    });
-    
+
+    $app->hook(
+        before_dispatch => sub {
+            my $c = shift;
+
+       #create a new object that will help to generate binding for dx controls
+            $c->stash( 'dxHelper' =>
+                    Mojolicious::Plugin::DevexpressHelpers::Helpers->new );
+        }
+    );
+
 }
 
 =head1 AUTHOR

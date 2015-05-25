@@ -8,6 +8,9 @@ use utf8;
 # Disable epoll, kqueue and IPv6
 BEGIN { $ENV{MOJO_POLL} = $ENV{MOJO_NO_IPV6} = 1 }
 
+plan( skip_all => 'Need Mojolicious::Plugin::AssetPack plugin.' )
+    unless eval { "use Mojolicious::Plugin::AssetPack; 1;" };
+
 use Test::More;
 use Test::Mojo;
 use Mojolicious::Lite;
