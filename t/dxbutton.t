@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-
+use utf8;
 use strict;
 use warnings;
 
@@ -17,6 +17,7 @@ app->log->level('error'); #silence
 # routes
 get '/' => 'index';
 get '/with_type' => 'with_type';
+get '/encoding' => 'encoding';
 
 # Test
 my $t = Test::Mojo->new;
@@ -35,6 +36,11 @@ $t->get_ok('/with_type')
 text: "Test danger button",
 type: "danger"});});});
 
+$t->get_ok('/encoding')
+  ->status_is(200)
+  ->element_exists('html body div[id=accentBn]')
+  ->text_is('script' => q{$(function(){$("#accentBn").dxButton({text: "été"});});});
+  
 done_testing;
 
 __DATA__
@@ -45,6 +51,10 @@ __DATA__
 @@ with_type.html.ep
 % layout 'main';
 %= dxbutton 'myButtonId' => 'Test danger button' => '/action/button1', { type => 'danger' }
+
+@@ encoding.html.ep
+% layout 'main';
+%= dxbutton 'accentBn' => 'été'
 
 @@ layouts/main.html.ep
 <!doctype html>

@@ -1,3 +1,4 @@
+use utf8;
 package Mojolicious::Plugin::DevexpressHelpers::Helpers;
 
 #ABSTRACT: Helpers for Devexpress controls are defined here
@@ -5,6 +6,11 @@ use Modern::Perl;
 use Mojo::ByteStream;
 use MojoX::AlmostJSON qw(encode_json);
 use constant DEBUG => 0;
+
+#Not sure why C<out> function have to decode from utf8,
+#but it make my day!
+our $OUT_DECODE = 'UTF-8';
+
 =head1 SUBROUTINES/METHODS
 
 =cut
@@ -18,7 +24,9 @@ Output string in template
 =cut
 sub out{
 	my $tag = shift;
-	return Mojo::ByteStream->new($tag);
+	my $bytes = Mojo::ByteStream->new($tag);
+	return $bytes->decode($OUT_DECODE) if defined $OUT_DECODE;
+	return $bytes;
 }
 
 =head2 new
@@ -222,6 +230,35 @@ sub dxpopup{
 	
 	dxbind( $c, 'dxPopup' => $id => $attrs );
 }
+
+=head2 dxswitch C<[ $id [, $value [, $label] ] ], [\%opts]>
+
+	%= dxswitch 'mySwitch' => $boolean_value => 'Enabled: '
+	
+=cut
+
+sub dxswitch{
+	my $c = shift;
+	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
+	my $id = delete($attrs->{id});
+	if (my $name = $id) {
+		$attrs->{attr}{name}=$name;
+	}
+	$id //= new_id( $c, $attrs );
+	$attrs->{onText}  //= 'On';
+	$attrs->{offText} //= 'Off';
+	my (@before, @after);
+	if(my $label = delete($attrs->{label})){
+		push @before, '<div class="dx-field">';
+		push @before, '<div class="dx-field-label">'.$label.'</div>';
+		push @before, '<div class="dx-field-value">';
+		push @after, '</div>';
+		push @after, '</div>';
+	}
+	
+	dxbind( $c, 'dxSwitch' => $id => $attrs, undef, \@before, \@after );	
+}
+
 
 =head2 dxtextbox C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
 
