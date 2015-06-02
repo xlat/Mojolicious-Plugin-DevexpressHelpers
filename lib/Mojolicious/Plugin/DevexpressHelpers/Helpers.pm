@@ -287,9 +287,36 @@ sub dxtextbox{
 	dxbind( $c, 'dxTextBox' => $id => $attrs, undef, \@before, \@after );	
 }
 
+
+=head2 dxlookup C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
+
+	%= dxlookup 'name' => $value => 'Name: ', { dataSource => $ds, valueExpr=> $ve, displayExpr => $de }
+
+=cut
+sub dxlookup{
+	my $c = shift;
+	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
+	my $id = delete($attrs->{id});
+	if (my $name = $id) {
+		$attrs->{attr}{name}=$name;
+	}
+	
+	$id //= new_id( $c, $attrs );
+
+	my (@before, @after);
+	if(my $label = delete($attrs->{label})){
+		push @before, '<div class="dx-field">';
+		push @before, '<div class="dx-field-label">'.$label.'</div>';
+		push @before, '<div class="dx-field-value">';
+		push @after, '</div>';
+		push @after, '</div>';
+	}
+	
+	dxbind( $c, 'dxLookup' => $id => $attrs, undef, \@before, \@after );	
+}
+
 =for comment
 TextArea
-Switch
 SelectBox
 NumberBox
 List
@@ -378,7 +405,7 @@ my @without_prefix = qw( dxbuild required_assets require_asset );
 
 #Helper method to export with prepending a prefix
 my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch
-	SelectBox NumberBox List DateBox CheckBox Calendar Box);
+	SelectBox NumberBox List DateBox CheckBox Calendar Box Lookup );
 =head2 register
 
 Register our helpers
