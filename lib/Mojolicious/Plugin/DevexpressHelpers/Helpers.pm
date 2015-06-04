@@ -142,8 +142,16 @@ sub parse_attributs{
 	my @implicit_args = @{shift()};
 	my %attrs;
 	IMPLICIT_ARGUMENT:
-	while(@_ and ref($_[0]) =~ /^(?:|SCALAR)$/){
-		$attrs{ shift @implicit_args } = shift @_;
+	while(@_ and @implicit_args){
+		my $ref = ref($_[0]);
+		my $implicit = shift @implicit_args || '';
+		last unless $ref =~ /^(?:|SCALAR)$/
+		or (substr($implicit,0,1) eq '@' and $ref eq 'ARRAY')
+		or (substr($implicit,0,1) eq '%' and $ref eq 'HASH')
+		or (substr($implicit,0,1) eq '\\' and $ref eq 'REF')
+		or (substr($implicit,0,1) eq '*');
+		$implicit =~ s/^[\\\*\%\@]//;
+		$attrs{ $implicit } = shift @_;
 	}
 	if(my $args = shift){
 		if(ref($args) eq 'HASH'){
@@ -155,6 +163,18 @@ sub parse_attributs{
 	}
 	return \%attrs;
 }	
+
+=head2 dxmenu C< $id, \@items ,[ \%options ]>
+
+	%= dxmenu mainMenu => [{ id => 1, text => 'Back', iconSrc => '/images/back.png', link => 'javascript:location.back();' }], \q% function(e){return e.itemData.link;} %
+
+=cut
+sub dxmenu {
+    my $c = shift;
+	my $attrs = parse_attributs( $c, [qw(id @items onItemClick)], @_ );
+	my $id = delete($attrs->{id}) // new_id( $c, $attrs );	
+	dxbind( $c, 'dxMenu' => $id => $attrs);
+}
 
 =head2 dxbutton C<[ $id, [ $text, [ $onclick ] ] ], [ \%options ]>
 
@@ -404,7 +424,7 @@ sub required_assets{
 my @without_prefix = qw( dxbuild required_assets require_asset );
 
 #Helper method to export with prepending a prefix
-my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch
+my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch Menu
 	SelectBox NumberBox List DateBox CheckBox Calendar Box Lookup );
 =head2 register
 
