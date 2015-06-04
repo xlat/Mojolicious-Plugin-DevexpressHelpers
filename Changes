@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.151550_000 2015-06-04 13:20:25+02:00 Europe/Paris (TRIAL RELEASE)
         Add dxmenu helper
 0.151530  2015-06-02 16:12:27+02:00 Europe/Paris
         Add dxlookup helper
