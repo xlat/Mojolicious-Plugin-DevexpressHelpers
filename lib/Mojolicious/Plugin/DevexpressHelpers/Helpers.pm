@@ -176,6 +176,19 @@ sub dxmenu {
 	dxbind( $c, 'dxMenu' => $id => $attrs);
 }
 
+=head2 dxloadpanel C<[ $id, [ $message ] ], [ \%options ]>
+
+	%= dxloadpanel myLoadPanel => 'Please wait'
+
+=cut
+
+sub dxloadpanel {
+    my $c = shift;
+	my $attrs = parse_attributs( $c, [qw(id message)], @_ );
+	my $id = delete($attrs->{id}) // new_id( $c, $attrs );	
+	dxbind( $c, 'dxLoadPanel' => $id => $attrs);
+}
+
 =head2 dxbutton C<[ $id, [ $text, [ $onclick ] ] ], [ \%options ]>
 
 	%= dxbutton myButtonId => 'My button' => q{ function (){ alert('onClick!'); } }
@@ -424,7 +437,8 @@ sub required_assets{
 my @without_prefix = qw( dxbuild required_assets require_asset );
 
 #Helper method to export with prepending a prefix
-my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch Menu
+my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch
+	Menu LoadPanel
 	SelectBox NumberBox List DateBox CheckBox Calendar Box Lookup );
 =head2 register
 
