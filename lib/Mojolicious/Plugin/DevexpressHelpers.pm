@@ -50,7 +50,7 @@ sub register {
         before_dispatch => sub {
             my $c = shift;
 
-       #create a new object that will help to generate binding for dx controls
+            #create a new object that will help to generate binding for dx controls
             $c->stash( 'dxHelper' =>
                     Mojolicious::Plugin::DevexpressHelpers::Helpers->new );
         }

@@ -10,6 +10,7 @@ use constant DEBUG => 0;
 #Not sure why C<out> function have to decode from utf8,
 #but it make my day!
 our $OUT_DECODE = 'UTF-8';
+our $INDENT_BINDING = 0;
 
 =head1 SUBROUTINES/METHODS
 
@@ -44,6 +45,16 @@ sub new{
 			bindings => '',
 		}, $class;
 	return $self;
+}
+
+=head2 indent_binding
+
+	$dxHelper->indent_binding( 1 );
+
+=cut
+sub indent_binding{
+	my $self = shift;
+	$INDENT_BINDING = shift;
 }
 
 =head2 add_binding
@@ -105,6 +116,7 @@ sub dxbind{
     my @options;
 	if (ref($attrs) eq 'HASH') {
 		$binding .= '{';
+		$binding .= "\n  " if $INDENT_BINDING;
 		for my $k ( sort keys %$attrs){
 			my $v = $attrs->{$k};
 			if(ref($v) eq 'SCALAR'){
@@ -120,11 +132,11 @@ sub dxbind{
 	else{
 		push @options, $attrs;
 	}
-    $binding .= join ",\n", @options;
+    $binding .= join ",\n".($INDENT_BINDING?'  ':''), @options;
 	$binding .= '}' if ref($attrs) eq 'HASH';
-    $binding .= ');';
+    $binding .= ');' . ($INDENT_BINDING?"\n":"");
 	#append some extensions (eg: dxdatagrid)
-	$binding .= join ";\n", @$extensions if defined $extensions;
+	$binding .= join ";\n".($INDENT_BINDING?'  ':''), @$extensions if defined $extensions;
 	$c->stash('dxHelper')->add_binding($binding);
 	out join('',@$befores).'<div id="'.$id.'"></div>'.join('',@$afters);
 }
@@ -348,9 +360,36 @@ sub dxlookup{
 	dxbind( $c, 'dxLookup' => $id => $attrs, undef, \@before, \@after );	
 }
 
+=head2 dxselectbox C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
+
+	%= dxselectbox 'name' => $value => 'Name: ', { dataSource => $ds, valueExpr=> $ve, displayExpr => $de }
+
+=cut
+sub dxselectbox{
+	my $c = shift;
+	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
+	my $id = delete($attrs->{id});
+	if (my $name = $id) {
+		$attrs->{attr}{name}=$name;
+	}
+	
+	$id //= new_id( $c, $attrs );
+
+	my (@before, @after);
+	if(my $label = delete($attrs->{label})){
+		push @before, '<div class="dx-field">';
+		push @before, '<div class="dx-field-label">'.$label.'</div>';
+		push @before, '<div class="dx-field-value">';
+		push @after, '</div>';
+		push @after, '</div>';
+	}
+	
+	dxbind( $c, 'dxSelectBox' => $id => $attrs, undef, \@before, \@after );	
+}
+
+
 =for comment
 TextArea
-SelectBox
 NumberBox
 List
 DateBox
@@ -434,7 +473,7 @@ sub required_assets{
 }
 
 #Helper method to export without prepending a prefix
-my @without_prefix = qw( dxbuild required_assets require_asset );
+my @without_prefix = qw( dxbuild required_assets require_asset indent_binding );
 
 #Helper method to export with prepending a prefix
 my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch
