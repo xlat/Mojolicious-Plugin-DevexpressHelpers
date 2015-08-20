@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.152320  2015-08-20 15:59:07+02:00 Europe/Paris
         Add dxselectbox helper + indent_binding
 0.151552  2015-06-04 16:08:06+02:00 Europe/Paris
         Add dxloadpanel helper
