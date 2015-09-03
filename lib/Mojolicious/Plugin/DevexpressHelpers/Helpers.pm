@@ -118,12 +118,12 @@ sub dxbind{
 		$binding .= '{';
 		$binding .= "\n  " if $INDENT_BINDING;
 		for my $k ( sort keys %$attrs){
-			my $v = $attrs->{$k};
+			my $v = $attrs->{$k} // '';
 			if(ref($v) eq 'SCALAR'){
 				#unref protected scalar
 				$v = $$v;
 			}
-			elsif ($v && $v!~/^\s*(?:function\s*\()/) {
+			elsif ($v!~/^\s*(?:function\s*\()/) {
 				$v =  encode_json $v;
 			}
 			push @options, "$k: $v";
