@@ -26,9 +26,11 @@ $t->get_ok('/')
   #TODO: check label existence...
   #->element_exists('html body div[id="program.name"]')
   ->element_exists('html body div[id="resource.name"]')
-  ->text_is('script' => q{$(function(){$("#resource\\\\.name").dxTextBox({attr: {"name":"resource.name"},
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#resource\\\\.name").dxTextBox({attr: {"name":"resource.name"},
 placeHolder: "Type a resource name",
-value: "default value"});});});
+value: "default value"});
+});});
 
 done_testing;
 

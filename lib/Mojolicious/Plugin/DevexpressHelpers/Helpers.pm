@@ -123,7 +123,7 @@ sub dxbind{
 				#unref protected scalar
 				$v = $$v;
 			}
-			elsif ($v!~/^\s*(?:function\s*\()/) {
+			elsif ($v && $v!~/^\s*(?:function\s*\()/) {
 				$v =  encode_json $v;
 			}
 			push @options, "$k: $v";
@@ -414,7 +414,7 @@ sub dxbuild {
 	my $c = shift;
 	my $dxhelper = $c->stash('dxHelper') or return;
 	if($dxhelper->{bindings}){
-		out '<script language="javascript">$(function(){'.$dxhelper->{bindings}.'});</script>';
+		out '<script language="javascript">$(window).on("load",function(){'."\n".$dxhelper->{bindings}."\n".'});</script>';
 	}
 }
 

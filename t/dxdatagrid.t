@@ -26,21 +26,27 @@ my $t = Test::Mojo->new;
 $t->get_ok('/')
   ->status_is(200)
   ->element_exists('html body div[id=dxctl1]')
-  ->text_is('script' => q{$(function(){$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
-dataSource: {store:{type:'odata',url:'/web-service.json'}}});});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#dxctl1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
+dataSource: {store:{type:'odata',url:'/web-service.json'}}});
+});});
 
 # GET /customstore
 $t->get_ok('/customstore')
   ->status_is(200)
   ->element_exists('html body div[id=myGrid1]')
-  ->text_is('script' => q{$(function(){$("#myGrid1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
-dataSource: SERVICES.myEntity});});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#myGrid1").dxDataGrid({columns: ["id","name",{"cellTemplate":function(c,o){ return 42 }},{"allowFiltering":false}],
+dataSource: SERVICES.myEntity});
+});});
 
 # GET /customeoptions
 $t->get_ok('/customeoptions')
   ->status_is(200)
   ->element_exists('html body div[id=myGrid2]')
-  ->text_is('script' => q{$(function(){$("#myGrid2").dxDataGrid(SERVICES.gridsOptions.myEntity);});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#myGrid2").dxDataGrid(SERVICES.gridsOptions.myEntity);
+});});
 
 done_testing;
 

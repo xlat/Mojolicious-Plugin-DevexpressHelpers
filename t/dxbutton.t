@@ -26,20 +26,26 @@ my $t = Test::Mojo->new;
 $t->get_ok('/')
   ->status_is(200)
   ->element_exists('html body div[id=dxctl1]')
-  ->text_is('script' => q{$(function(){$("#dxctl1").dxButton({onClick: "\/action\/button1",
-text: "Test button"});});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#dxctl1").dxButton({onClick: "\/action\/button1",
+text: "Test button"});
+});});
 
 $t->get_ok('/with_type')
   ->status_is(200)
   ->element_exists('html body div[id=myButtonId]')
-  ->text_is('script' => q{$(function(){$("#myButtonId").dxButton({onClick: "\/action\/button1",
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#myButtonId").dxButton({onClick: "\/action\/button1",
 text: "Test danger button",
-type: "danger"});});});
+type: "danger"});
+});});
 
 $t->get_ok('/encoding')
   ->status_is(200)
   ->element_exists('html body div[id=accentBn]')
-  ->text_is('script' => q{$(function(){$("#accentBn").dxButton({text: "été"});});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#accentBn").dxButton({text: "été"});
+});});
   
 done_testing;
 

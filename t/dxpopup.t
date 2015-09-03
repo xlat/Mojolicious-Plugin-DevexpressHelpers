@@ -24,8 +24,10 @@ my $t = Test::Mojo->new;
 $t->get_ok('/')
   ->status_is(200)
   ->element_exists('html body div[id=dxctl1]')
-  ->text_is('script' => q{$(function(){$("#dxctl1").dxPopup({contentTemplate: "Sample content",
-title: "Test popup"});});});
+  ->text_is('script' => q{$(window).on("load",function(){
+$("#dxctl1").dxPopup({contentTemplate: "Sample content",
+title: "Test popup"});
+});});
 
 done_testing;
 
