@@ -12,6 +12,45 @@ use constant DEBUG => 0;
 our $OUT_DECODE = 'UTF-8';
 our $INDENT_BINDING = 0;
 
+my @generic_controls = qw(
+		Accordion
+		Autocomplete
+		Box
+		CheckBox
+		Calendar
+		ColorBox
+		ContextMenu
+		DateBox
+		FileUploader
+		Gallery
+		List
+		LoadIndicator
+		Lookup
+		Map
+		MultiView
+		NavBar
+		NumberBox
+		PivotGrid
+		PivotGridFieldChooser
+		Popover
+		ProgressBar
+		RadioGroup
+		RangeSlider
+		Resizable
+		ResponsiveBox
+		Scheduler
+		ScrollView
+		SelectBox
+		Slider
+		Switch
+		TabPanel
+		Tabs
+		TagBox
+		TextAread
+		TextBox
+		TitleView
+	);
+
 =head1 SUBROUTINES/METHODS
 
 =cut
@@ -276,127 +315,56 @@ sub dxpopup{
 	dxbind( $c, 'dxPopup' => $id => $attrs );
 }
 
-=head2 dxswitch C<[ $id [, $value [, $label] ] ], [\%opts]>
 
+=head2 mk_dxcontrol C<$dxControlName>
+
+In this package:
+
+	mk_dxcontrol('dxNumberBox');
+	mk_dxcontrol('dxSwitch');
+	mk_dxcontrol('dxTextBox');
+	mk_dxcontrol('dxLookup');
+	mk_dxcontrol('dxSelectBox');
+	
+In your template:
+	
+	%= dxnumberbox 'age' => $value => 'Age: ', { placeHolder => 'Enter your age' }
 	%= dxswitch 'mySwitch' => $boolean_value => 'Enabled: '
-	
-=cut
-
-sub dxswitch{
-	my $c = shift;
-	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
-	my $id = delete($attrs->{id});
-	if (my $name = $id) {
-		$attrs->{attr}{name}=$name;
-	}
-	$id //= new_id( $c, $attrs );
-	$attrs->{onText}  //= 'On';
-	$attrs->{offText} //= 'Off';
-	my (@before, @after);
-	if(my $label = delete($attrs->{label})){
-		push @before, '<div class="dx-field">';
-		push @before, '<div class="dx-field-label">'.$label.'</div>';
-		push @before, '<div class="dx-field-value">';
-		push @after, '</div>';
-		push @after, '</div>';
-	}
-	
-	dxbind( $c, 'dxSwitch' => $id => $attrs, undef, \@before, \@after );	
-}
-
-
-=head2 dxtextbox C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
-
 	%= dxtextbox 'name' => $value => 'Name: ', { placeHolder => 'Type a name' }
-
-=cut
-sub dxtextbox{
-	my $c = shift;
-	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
-	my $id = delete($attrs->{id});
-	if (my $name = $id) {
-		$attrs->{attr}{name}=$name;
-	}
-	
-	$id //= new_id( $c, $attrs );
-
-	my (@before, @after);
-	if(my $label = delete($attrs->{label})){
-		push @before, '<div class="dx-field">';
-		push @before, '<div class="dx-field-label">'.$label.'</div>';
-		push @before, '<div class="dx-field-value">';
-		push @after, '</div>';
-		push @after, '</div>';
-	}
-	
-	dxbind( $c, 'dxTextBox' => $id => $attrs, undef, \@before, \@after );	
-}
-
-
-=head2 dxlookup C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
-
 	%= dxlookup 'name' => $value => 'Name: ', { dataSource => $ds, valueExpr=> $ve, displayExpr => $de }
-
-=cut
-sub dxlookup{
-	my $c = shift;
-	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
-	my $id = delete($attrs->{id});
-	if (my $name = $id) {
-		$attrs->{attr}{name}=$name;
-	}
-	
-	$id //= new_id( $c, $attrs );
-
-	my (@before, @after);
-	if(my $label = delete($attrs->{label})){
-		push @before, '<div class="dx-field">';
-		push @before, '<div class="dx-field-label">'.$label.'</div>';
-		push @before, '<div class="dx-field-value">';
-		push @after, '</div>';
-		push @after, '</div>';
-	}
-	
-	dxbind( $c, 'dxLookup' => $id => $attrs, undef, \@before, \@after );	
-}
-
-=head2 dxselectbox C<[ $id, [ $value, [ $label, ] ] ], [\%opts]>
-
 	%= dxselectbox 'name' => $value => 'Name: ', { dataSource => $ds, valueExpr=> $ve, displayExpr => $de }
 
 =cut
-sub dxselectbox{
-	my $c = shift;
-	my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
-	my $id = delete($attrs->{id});
-	if (my $name = $id) {
-		$attrs->{attr}{name}=$name;
-	}
-	
-	$id //= new_id( $c, $attrs );
 
-	my (@before, @after);
-	if(my $label = delete($attrs->{label})){
-		push @before, '<div class="dx-field">';
-		push @before, '<div class="dx-field-label">'.$label.'</div>';
-		push @before, '<div class="dx-field-value">';
-		push @after, '</div>';
-		push @after, '</div>';
-	}
+sub mk_dxcontrol{
+	my $dxControl = shift;
+	my $generic = sub{
+		my $c = shift;
+		my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
+		my $id = delete($attrs->{id});
+		if (my $name = $id) {
+			$attrs->{attr}{name}=$name;
+		}
+		
+		$id //= new_id( $c, $attrs );
 	
-	dxbind( $c, 'dxSelectBox' => $id => $attrs, undef, \@before, \@after );	
+		my (@before, @after);
+		if(my $label = delete($attrs->{label})){
+			push @before, '<div class="dx-field">';
+			push @before, '<div class="dx-field-label">'.$label.'</div>';
+			push @before, '<div class="dx-field-value">';
+			push @after, '</div>';
+			push @after, '</div>';
+		}
+		
+		dxbind( $c, $dxControl => $id => $attrs, undef, \@before, \@after );	
+	};
+	
+	{
+		no strict 'refs';
+		*{__PACKAGE__.'::'.lc $dxControl} = $generic;
+	}
 }
-
-
-=for comment
-TextArea
-NumberBox
-List
-DateBox
-CheckBox
-Calendar
-Box
-=cut
 
 =head2 dxbuild
 
@@ -476,9 +444,8 @@ sub required_assets{
 my @without_prefix = qw( dxbuild required_assets require_asset indent_binding );
 
 #Helper method to export with prepending a prefix
-my @with_prefix = qw( Button DataGrid Popup TextBox TextArea Switch
-	Menu LoadPanel
-	SelectBox NumberBox List DateBox CheckBox Calendar Box Lookup );
+my @with_prefix = (qw( Button DataGrid Popup Menu LoadPanel Lookup ),
+				   @generic_controls);
 =head2 register
 
 Register our helpers
@@ -487,6 +454,9 @@ Register our helpers
 sub register {
 	my ( $self, $app, $args ) = @_;
 	my $tp = $args->{tag_prefix};
+	
+	#build generic dx-controls
+	mk_dxcontrol( "dx$_" ) for @generic_controls;
 	
 	SUB_NO_PREFIX:
 	for my $subname ( @without_prefix ){

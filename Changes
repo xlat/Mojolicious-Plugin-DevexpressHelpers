@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-
+        Add all other controls as generic controls.
 0.152460  2015-09-03 17:02:55+02:00 Europe/Paris
 
 0.152320  2015-08-20 15:59:07+02:00 Europe/Paris
