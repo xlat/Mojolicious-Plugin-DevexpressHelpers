@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.153350  2015-12-01 13:26:30+01:00 Europe/Paris
         Add all other controls as generic controls.
 0.152460  2015-09-03 17:02:55+02:00 Europe/Paris
 
