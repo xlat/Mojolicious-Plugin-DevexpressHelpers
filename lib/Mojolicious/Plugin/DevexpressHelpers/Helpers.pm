@@ -82,6 +82,8 @@ sub new{
 	my $self = bless { 
 			next_id => 1,
 			bindings => '',
+			before_bindings => '',
+			after_bindings => '',
 		}, $class;
 	return $self;
 }
@@ -382,7 +384,14 @@ sub dxbuild {
 	my $c = shift;
 	my $dxhelper = $c->stash('dxHelper') or return;
 	if($dxhelper->{bindings}){
-		out '<script language="javascript">$(window).on("load",function(){'."\n".$dxhelper->{bindings}."\n".'});</script>';
+		out '<script language="javascript">$(window).on("load",function(){'.
+			"\n".
+			join("\n",
+				 grep{ ($_//'') ne ''}
+				 @$dxhelper{'before_bindings','bindings','after_bindings'}
+			).
+			"\n".
+			'});</script>';
 	}
 }
 
@@ -440,8 +449,41 @@ sub required_assets{
 	return $results;
 }
 
+=head2 prepend_js
+
+Prepend javascript code to dx-generated code
+
+	append_js 'alert("before dx-controls initialisation");'
+
+=cut
+sub prepend_js{
+	my ($c, @js) = @_;
+	my $dxhelper = $c->stash('dxHelper') or return;
+	for(@js){
+		$dxhelper->{before_bindings} .= "\n" if $INDENT_BINDING;
+		$dxhelper->{before_bindings} .= $_;
+	}
+}
+
+
+=head2 append_js 
+
+Append javascript code to dx-generated code
+
+	append_js 'alert("after dx-controls initialisation");'
+
+=cut
+sub append_js{
+	my ($c, @js) = @_;
+	my $dxhelper = $c->stash('dxHelper') or return;
+	for(@js){
+		$dxhelper->{after_bindings} .= "\n" if $INDENT_BINDING;
+		$dxhelper->{after_bindings} .= $_;
+	}
+}
+
 #Helper method to export without prepending a prefix
-my @without_prefix = qw( dxbuild required_assets require_asset indent_binding );
+my @without_prefix = qw( dxbuild required_assets require_asset indent_binding append_js prepend_js );
 
 #Helper method to export with prepending a prefix
 my @with_prefix = (qw( Button DataGrid Popup Menu LoadPanel Lookup ),
