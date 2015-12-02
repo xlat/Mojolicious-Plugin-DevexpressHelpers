@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.153360  2015-12-02 09:39:58+01:00 Europe/Paris
         Add prepend_js and append_js helpers
 0.153350  2015-12-01 13:26:30+01:00 Europe/Paris
         Add all other controls as generic controls.
