@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.160822  2016-03-22 15:34:48+01:00 Europe/Paris
         Add a prependTo/appendTo option to dxbind, so it can attach a 
           control to an already existing tag, using jQuery selector syntax.
         Add a js_prefix option to dxbuild to customize javascript wrapper.
