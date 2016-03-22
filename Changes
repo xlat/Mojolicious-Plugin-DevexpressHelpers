@@ -1,7 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-
+        Add a prependTo/appendTo option to dxbind, so it can attach a 
+          control to an already existing tag, using jQuery selector syntax.
+        Add a js_prefix option to dxbuild to customize javascript wrapper.
+        Fix typo on TextArea\d
+        Add dxform specifics
+        Add more controls.
 0.153360  2015-12-02 09:39:58+01:00 Europe/Paris
         Add prepend_js and append_js helpers
 0.153350  2015-12-01 13:26:30+01:00 Europe/Paris
@@ -23,6 +28,6 @@ Revision history for {{$dist->name}}
         Review prereqs
 0.151410  2015-05-21 16:13:14+02:00 Europe/Paris
         Add dxpopup helper, modify API to introduce id parameters.
-0.01    Date/time
+0.01    2015-05-04 17:05:22+02:00 Europe/Paris
         First version, released on an unsuspecting world.
 
