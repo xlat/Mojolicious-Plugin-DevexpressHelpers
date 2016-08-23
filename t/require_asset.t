@@ -16,10 +16,10 @@ use Test::Mojo;
 use Mojolicious::Lite;
 use Cwd qw(cwd);
 plugin 'DevexpressHelpers';
-push @{ app->static->paths }, cwd . '/t/fixtures/js';
-plugin 'AssetPack';
-app->asset( 'test.js' => 'test-framework.js' );
-app->asset( 'other.js' => 'other-framework.js' );
+plugin 'AssetPack' => { pipes => [qw( JavaScript )] };
+app->asset->store->paths->[0] = cwd . '/t/fixtures/js';
+app->asset->process( 'test.js' => 'test-framework.js' );
+app->asset->process( 'other.js' => 'other-framework.js' );
 app->log->level('error'); #silence
 
 # routes
@@ -32,14 +32,14 @@ my $t = Test::Mojo->new;
 # GET / default
 $t->get_ok('/')
     ->status_is(200)
-    ->element_exists('head > script[src^="/packed/test-framework-"]')
+    ->element_exists('head > script[src^="/asset/"][src$="/test-framework.js"]')
     ->or(sub { diag $t->tx->res->to_string });
 
 # GET / default
 $t->get_ok('/two')
     ->status_is(200)
-    ->element_exists('head > script[src^="/packed/test-framework-"]')
-    ->element_exists('head > script[src^="/packed/other-framework-"]')
+    ->element_exists('head > script[src^="/asset/"][src$="/test-framework.js"]')
+    ->element_exists('head > script[src^="/asset/"][src$="/other-framework.js"]')
     ->or(sub { diag $t->tx->res->to_string });
 
 done_testing;
