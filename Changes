@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.162360  2016-08-23 09:58:21+02:00 Europe/Paris
         Upgrade to Mojolicious::Plugin::AssetPack 1.20.
 0.160822  2016-03-22 15:34:48+01:00 Europe/Paris
         Add a prependTo/appendTo option to dxbind, so it can attach a 
