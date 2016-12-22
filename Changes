@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-
+        breaking change : Replace attr by inputAttr for 16.2 compatibility (not backward compatibility)
 0.162360  2016-08-23 09:58:21+02:00 Europe/Paris
         Upgrade to Mojolicious::Plugin::AssetPack 1.20.
 0.160822  2016-03-22 15:34:48+01:00 Europe/Paris

@@ -27,7 +27,7 @@ $t->get_ok('/')
   #->element_exists('html body div[id="program.name"]')
   ->element_exists('html body div[id="resource.name"]')
   ->text_is('script' => q{$(window).on("load",function(){
-$("#resource\\\\.name").dxTextBox({attr: {"name":"resource.name"},
+$("#resource\\\\.name").dxTextBox({inputAttr: {"name":"resource.name"},
 placeHolder: "Type a resource name",
 value: "default value"});
 });});

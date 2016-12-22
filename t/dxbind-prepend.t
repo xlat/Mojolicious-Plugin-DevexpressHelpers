@@ -27,7 +27,7 @@ $t->get_ok('/')
   ->element_exists('html body div[class="container"]')
   ->element_exists_not('html body div[id="resource.name"]')
   ->text_is('script' => q{$(window).on("load",function(){
-$('<div id="resource.name">').dxTextBox({attr: {"name":"resource.name"},
+$('<div id="resource.name">').dxTextBox({inputAttr: {"name":"resource.name"},
 value: "default value"}).appendTo(".container");
 });});
 
@@ -36,7 +36,7 @@ $t->get_ok('/prepend')
   ->element_exists('html body div[class="container"]')
   ->element_exists_not('html body div[id="resource.name"]')
   ->text_is('script' => q{$(window).on("load",function(){
-$('<div id="resource.name">').dxTextBox({attr: {"name":"resource.name"},
+$('<div id="resource.name">').dxTextBox({inputAttr: {"name":"resource.name"},
 value: "default value"}).prependTo(".container");
 });});
 
