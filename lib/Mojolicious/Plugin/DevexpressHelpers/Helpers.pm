@@ -395,7 +395,7 @@ sub mk_dxcontrol{
 		my $attrs = parse_attributs( $c, [qw(id value label)], @_ );
 		my $id = delete($attrs->{id});
 		if (my $name = $id) {
-			$attrs->{inputAttr}{name}=$name;
+			$attrs->{name}=$name;
 		}
 		
 		$id //= new_id( $c, $attrs );

@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-
+        automatically specify name attribut rather than specifying in inputAttr
 0.163570  2016-12-22 11:39:20+01:00 Europe/Paris
         breaking change : Replace attr by inputAttr for 16.2 compatibility (not backward compatibility)
 0.162360  2016-08-23 09:58:21+02:00 Europe/Paris
